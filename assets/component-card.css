@@ -999,7 +999,7 @@ body:not(:has(.productList)) .card-information:has(.card-information__wrapper.te
     list-style: none;
     padding: 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     overflow: auto;
     flex-wrap: wrap;

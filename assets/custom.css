@@ -9,3 +9,9 @@
 // Please use only CSS to style the layout.
 //
 // =============================================================================*/
+ .card-media img {
+    mix-blend-mode: multiply;
+}
+.card-media {
+    background: #F3F4F4 !important;
+}
