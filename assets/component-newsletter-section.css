@@ -88,10 +88,6 @@
     text-underline-offset: 4px;
 }
 
-.newsletter-section .section-content:not(.flex-direction-column):not(:has(.title-wrapper)) .title {
-    max-width: 25%;
-}
-
 .newsletter-section .section-content .title {
     font-size: var(--title-font-size); 
     color: var(--title-color); 
