@@ -147,6 +147,97 @@
             font-size: {{ section.settings.card_title_size_mobile }}px;
         }
     }
+
+    /* Visual Lookbook Cards - Slider Settings for 4.5 cards visible */
+    .visual-lookbook-cards.section-block-{{section.id}} .lookbooks {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding-bottom: 10px;
+    }
+
+    .visual-lookbook-cards.section-block-{{section.id}} .lookbooks::-webkit-scrollbar {
+        display: none;
+    }
+
+    .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item {
+        flex: 0 0 calc((100% - 60px) / 4.2);
+        min-width: calc((100% - 60px) / 4.2);
+        scroll-snap-align: start;
+        margin: 0 !important;
+        opacity: 1 !important;
+        display: block !important;
+    }
+
+    .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item .lookbook-image {
+        border-radius: {{ section.settings.card_border_radius }}px;
+        overflow: hidden;
+    }
+
+    .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item .img-box {
+        border-radius: {{ section.settings.card_border_radius }}px;
+        overflow: hidden;
+    }
+
+    .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item .img-box .image {
+        border-radius: {{ section.settings.card_border_radius }}px;
+    }
+
+    /* Slick slider override for 4.5 cards */
+    .visual-lookbook-cards.section-block-{{section.id}} .slick-list {
+        padding: 0 8% 0 0 !important;
+    }
+
+    .visual-lookbook-cards.section-block-{{section.id}} .slick-track {
+        display: flex;
+        gap: 20px;
+    }
+
+    .visual-lookbook-cards.section-block-{{section.id}} .slick-slide {
+        width: calc((100% - 60px) / 4) !important;
+        margin: 0 !important;
+    }
+
+    .visual-lookbook-cards.section-block-{{section.id}}:has(.lookbook-image-item+.lookbook-image-item) .lookbook-image-item {
+        margin: 0 !important;
+        opacity: 1;
+    }
+
+    @media screen and (min-width: 1400px) {
+        .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item {
+            flex: 0 0 calc((100% - 80px) / 4.5);
+            min-width: calc((100% - 80px) / 4.5);
+        }
+    }
+
+    @media screen and (min-width: 1025px) and (max-width: 1399px) {
+        .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item {
+            flex: 0 0 calc((100% - 60px) / 3.5);
+            min-width: calc((100% - 60px) / 3.5);
+        }
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+        .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item {
+            flex: 0 0 calc((100% - 40px) / 2.5);
+            min-width: calc((100% - 40px) / 2.5);
+        }
+    }
+
+    @media screen and (max-width: 767px) {
+        .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item {
+            flex: 0 0 calc((100% - 20px) / 1.5);
+            min-width: calc((100% - 20px) / 1.5);
+        }
+        
+        .visual-lookbook-cards.section-block-{{section.id}} .lookbooks {
+            gap: 15px;
+        }
+    }
 </style>
 
 {%- if has_fancy_box -%}
@@ -628,6 +719,16 @@
     {
         "type": "header",
         "content": "Card Overlay Settings"
+    },
+    {
+        "type": "range",
+        "id": "card_border_radius",
+        "label": "Card border radius",
+        "min": 0,
+        "max": 30,
+        "step": 2,
+        "default": 16,
+        "unit": "px"
     },
     {
         "type": "range",
