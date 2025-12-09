@@ -1,0 +1,780 @@
+{% comment %}
+  Image/Video + Text Feature Section
+  Editable from Shopify customizer
+{% endcomment %}
+
+<link rel="stylesheet" href="{{ 'component-rte.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'component-rte.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign media_type = section.settings.media_type
+  assign image = section.settings.image
+  assign video = section.settings.video
+  assign video_url = section.settings.video_url
+  assign layout = section.settings.layout
+  assign heading = section.settings.heading
+  assign description = section.settings.description
+  assign bg_color = section.settings.bg_color
+  assign text_color = section.settings.text_color
+  assign heading_color = section.settings.heading_color
+-%}
+
+<div class="image-text-feature section-{{ section.id }}" style="background-color: {{ bg_color }};">
+  <div class="{% if section.settings.container == 'full' %}container-full{% elsif section.settings.container == '1770' %}container-1770{% elsif section.settings.container == '1370' %}container-1370{% elsif section.settings.container == '1170' %}container-1170{% else %}container{% endif %}">
+    <div class="image-text-feature__wrapper {% if layout == 'image_right' %}image-text-feature__wrapper--reversed{% endif %}">
+      
+      {%- comment -%} Media Column (Image or Video) {%- endcomment -%}
+      <div class="image-text-feature__media">
+        {%- if media_type == 'video' -%}
+          {%- if video != blank -%}
+            <div class="image-text-feature__video-wrapper">
+              {{ video | video_tag: autoplay: section.settings.autoplay, loop: section.settings.loop, muted: section.settings.muted, controls: section.settings.show_controls, class: 'image-text-feature__video' }}
+            </div>
+          {%- elsif video_url != blank -%}
+            <div class="image-text-feature__video-wrapper">
+              {%- if video_url contains 'youtube' or video_url contains 'youtu.be' -%}
+                {%- assign youtube_id = video_url | split: 'v=' | last | split: '&' | first -%}
+                {%- if video_url contains 'youtu.be' -%}
+                  {%- assign youtube_id = video_url | split: 'youtu.be/' | last | split: '?' | first -%}
+                {%- endif -%}
+                <iframe 
+                  src="https://www.youtube.com/embed/{{ youtube_id }}{% if section.settings.autoplay %}?autoplay=1&mute=1{% endif %}" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen
+                  class="image-text-feature__iframe"
+                ></iframe>
+              {%- elsif video_url contains 'vimeo' -%}
+                {%- assign vimeo_id = video_url | split: 'vimeo.com/' | last | split: '?' | first -%}
+                <iframe 
+                  src="https://player.vimeo.com/video/{{ vimeo_id }}{% if section.settings.autoplay %}?autoplay=1&muted=1{% endif %}" 
+                  frameborder="0" 
+                  allow="autoplay; fullscreen; picture-in-picture" 
+                  allowfullscreen
+                  class="image-text-feature__iframe"
+                ></iframe>
+              {%- endif -%}
+            </div>
+          {%- else -%}
+            <div class="image-text-feature__placeholder">
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          {%- endif -%}
+        {%- else -%}
+          {%- if image != blank -%}
+            <div class="image-text-feature__image-wrapper">
+              {{ image | image_url: width: 800 | image_tag: 
+                loading: 'lazy',
+                class: 'image-text-feature__image',
+                widths: '300, 400, 500, 600, 700, 800',
+                sizes: '(max-width: 767px) 100vw, 50vw'
+              }}
+            </div>
+          {%- else -%}
+            <div class="image-text-feature__placeholder">
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Content Column {%- endcomment -%}
+      <div class="image-text-feature__content">
+        {%- if heading != blank -%}
+          <h2 class="image-text-feature__heading" style="color: {{ heading_color }};">
+            {{ heading }}
+          </h2>
+        {%- endif -%}
+
+        {%- if description != blank -%}
+          <div class="image-text-feature__description rte" style="color: {{ text_color }};">
+            {{ description }}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Feature List {%- endcomment -%}
+        {%- if section.blocks.size > 0 -%}
+          <ul class="image-text-feature__list">
+            {%- for block in section.blocks -%}
+              {%- case block.type -%}
+                {%- when 'feature_item' -%}
+                  <li class="image-text-feature__list-item" {{ block.shopify_attributes }} style="color: {{ text_color }};">
+                    <svg class="image-text-feature__check-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M13.3334 4L6.00008 11.3333L2.66675 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>{{ block.settings.feature_text }}</span>
+                  </li>
+              {%- endcase -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- comment -%} Buttons {%- endcomment -%}
+        <div class="image-text-feature__buttons">
+          {%- if section.settings.button_1_label != blank -%}
+            <a 
+              href="{{ section.settings.button_1_link }}" 
+              class="image-text-feature__button image-text-feature__button--primary"
+              style="
+                background-color: {{ section.settings.button_1_bg_color }};
+                color: {{ section.settings.button_1_text_color }};
+                border-color: {{ section.settings.button_1_bg_color }};
+              "
+            >
+              {{ section.settings.button_1_label }}
+            </a>
+          {%- endif -%}
+
+          {%- if section.settings.button_2_label != blank -%}
+            <a 
+              href="{{ section.settings.button_2_link }}" 
+              class="image-text-feature__button image-text-feature__button--secondary"
+              style="color: {{ section.settings.button_2_text_color }};"
+            >
+              {{ section.settings.button_2_label }}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3.33325 8H12.6666" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 3.33337L12.6667 8.00004L8 12.6667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .section-{{ section.id }} {
+    --section-padding-top-desktop: {{ section.settings.padding_top_desktop }}px;
+    --section-padding-bottom-desktop: {{ section.settings.padding_bottom_desktop }}px;
+    --section-padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --section-padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+  }
+
+  .section-{{ section.id }} {
+    padding-top: var(--section-padding-top-desktop);
+    padding-bottom: var(--section-padding-bottom-desktop);
+  }
+
+  .image-text-feature__wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ section.settings.columns_gap }}px;
+    align-items: center;
+  }
+
+  .image-text-feature__wrapper--reversed {
+    direction: rtl;
+  }
+
+  .image-text-feature__wrapper--reversed > * {
+    direction: ltr;
+  }
+
+  .image-text-feature__media {
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ section.settings.image_border_radius }}px;
+  }
+
+  .image-text-feature__image-wrapper {
+    position: relative;
+    aspect-ratio: {{ section.settings.image_aspect_ratio }};
+    overflow: hidden;
+    border-radius: {{ section.settings.image_border_radius }}px;
+  }
+
+  .image-text-feature__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .image-text-feature__video-wrapper {
+    position: relative;
+    aspect-ratio: {{ section.settings.image_aspect_ratio }};
+    overflow: hidden;
+    border-radius: {{ section.settings.image_border_radius }}px;
+  }
+
+  .image-text-feature__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .image-text-feature__iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .image-text-feature__placeholder {
+    aspect-ratio: {{ section.settings.image_aspect_ratio }};
+    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: {{ section.settings.image_border_radius }}px;
+  }
+
+  .image-text-feature__placeholder .placeholder-svg {
+    width: 50%;
+    height: 50%;
+    fill: #ccc;
+  }
+
+  .image-text-feature__content {
+    padding: 0 {{ section.settings.content_padding }}px;
+  }
+
+  .image-text-feature__heading {
+    font-size: {{ section.settings.heading_size }}px;
+    font-weight: {{ section.settings.heading_weight }};
+    line-height: 1.2;
+    margin: 0 0 {{ section.settings.heading_margin_bottom }}px 0;
+  }
+
+  .image-text-feature__description {
+    font-size: {{ section.settings.description_size }}px;
+    line-height: 1.6;
+    margin-bottom: {{ section.settings.description_margin_bottom }}px;
+  }
+
+  .image-text-feature__description p {
+    margin: 0;
+  }
+
+  .image-text-feature__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 {{ section.settings.list_margin_bottom }}px 0;
+  }
+
+  .image-text-feature__list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: {{ section.settings.list_font_size }}px;
+  }
+
+  .image-text-feature__list-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .image-text-feature__check-icon {
+    flex-shrink: 0;
+    color: {{ section.settings.check_icon_color }};
+  }
+
+  .image-text-feature__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    margin-top: {{ section.settings.buttons_margin_top }}px;
+  }
+
+  .image-text-feature__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: {{ section.settings.button_font_size }}px;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+  }
+
+  .image-text-feature__button:hover {
+    opacity: 0.85;
+  }
+
+  .image-text-feature__button--primary {
+    padding: 12px 24px;
+    border-radius: {{ section.settings.button_border_radius }}px;
+    border: 1px solid;
+  }
+
+  .image-text-feature__button--secondary {
+    background: transparent;
+    border: none;
+    padding: 12px 0;
+  }
+
+  .image-text-feature__button--secondary svg {
+    transition: transform 0.3s ease;
+  }
+
+  .image-text-feature__button--secondary:hover svg {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 991px) {
+    .image-text-feature__wrapper {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .image-text-feature__wrapper--reversed {
+      direction: ltr;
+    }
+
+    .image-text-feature__content {
+      padding: 0;
+    }
+
+    .section-{{ section.id }} {
+      padding-top: var(--section-padding-top-mobile);
+      padding-bottom: var(--section-padding-bottom-mobile);
+    }
+
+    .image-text-feature__heading {
+      font-size: {{ section.settings.heading_size_mobile }}px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Image/Video + Text Feature",
+  "tag": "section",
+  "class": "section-image-text-feature",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "container",
+      "options": [
+        { "value": "container", "label": "Default" },
+        { "value": "1170", "label": "1170px" },
+        { "value": "1370", "label": "1370px" },
+        { "value": "1770", "label": "1770px" },
+        { "value": "full", "label": "Full width" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "default": "image_left",
+      "options": [
+        { "value": "image_left", "label": "Image Left" },
+        { "value": "image_right", "label": "Image Right" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "columns_gap",
+      "label": "Gap between columns",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "Media type",
+      "default": "image",
+      "options": [
+        { "value": "image", "label": "Image" },
+        { "value": "video", "label": "Video" }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video (MP4)"
+    },
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Video URL (YouTube/Vimeo)",
+      "info": "Use this if you prefer external video. Leave empty to use uploaded video."
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay video",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop video",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "muted",
+      "label": "Mute video",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_controls",
+      "label": "Show video controls",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "Media aspect ratio",
+      "default": "4/5",
+      "options": [
+        { "value": "1/1", "label": "Square (1:1)" },
+        { "value": "4/3", "label": "Landscape (4:3)" },
+        { "value": "3/4", "label": "Portrait (3:4)" },
+        { "value": "4/5", "label": "Portrait (4:5)" },
+        { "value": "16/9", "label": "Widescreen (16:9)" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Media border radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "La tela más fresca que puedes encontrar."
+    },
+    {
+      "type": "html",
+      "id": "description",
+      "label": "Description (HTML allowed)",
+      "default": "<p>La camisetas clásicas que no falla. Perfecta para cualquier ocasión: del trabajo al after office, sin perder estilo.</p>"
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "label": "Content padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (desktop)",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "default": 40,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size (mobile)",
+      "min": 18,
+      "max": 50,
+      "step": 2,
+      "default": 28,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "default": "700",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "label": "Heading margin bottom",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Description size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "description_margin_bottom",
+      "label": "Description margin bottom",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 25,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "list_font_size",
+      "label": "List items font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 15,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "list_margin_bottom",
+      "label": "List margin bottom",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 25,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#f5f5f0"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "check_icon_color",
+      "label": "Check icon color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Primary Button"
+    },
+    {
+      "type": "text",
+      "id": "button_1_label",
+      "label": "Button label",
+      "default": "Asesoría"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_1_bg_color",
+      "label": "Button background",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "button_1_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Secondary Button"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Button label",
+      "default": "Ver productos"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_2_text_color",
+      "label": "Button text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "header",
+      "content": "Button Style"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Button font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "buttons_margin_top",
+      "label": "Buttons margin top",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 30,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "label": "Padding top (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "label": "Padding bottom (desktop)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Padding top (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Padding bottom (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature_item",
+      "name": "Feature item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "feature_text",
+          "label": "Feature text",
+          "default": "Feature item"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image/Video + Text Feature",
+      "blocks": [
+        {
+          "type": "feature_item",
+          "settings": {
+            "feature_text": "Diseños exclusivos y modernos"
+          }
+        },
+        {
+          "type": "feature_item",
+          "settings": {
+            "feature_text": "Tejidos suaves y duraderos"
+          }
+        },
+        {
+          "type": "feature_item",
+          "settings": {
+            "feature_text": "Perfectas para cualquier ocasión"
+          }
+        },
+        {
+          "type": "feature_item",
+          "settings": {
+            "feature_text": "Satisfacción garantizada"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
