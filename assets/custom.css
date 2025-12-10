@@ -14,6 +14,7 @@
 }
 .card-media {
     background: #F3F4F4 !important;
+    border-radius: 8px;
 }
 .newsletter-section .section-content-wrapper {
     background: url(https://cdn.shopify.com/s/files/1/0602/0713/7010/files/new_bg.avif?v=1765314644);
@@ -32,4 +33,19 @@ ul.list-product-tabs {
 .list-product-tabs .active {
     border-bottom: 2px solid #14191F !important;
     width: 100% !important;
+}
+.visual-lookbook-cards.section-block-template--20993985249522__visual_lookbook_cards_F6YG9V .lookbook-image-item .lookbook-image {
+    max-height: 420px;
+}
+section#shopify-section-template--20993985249522__17652990563c7d5f79{
+    background: #F5F5F1;
+}
+.footer__content-top {
+    padding-top: 200px !important;
+}
+.articleLookbook-block {
+    display: none;
+}
+div#shopify-section-template--20993984168178__banner {
+    background: #F5F5F1;
 }
