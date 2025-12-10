@@ -148,8 +148,17 @@
         }
     }
 
-    /* Visual Lookbook Cards - Slider Settings for 4.5 cards visible */
-    .visual-lookbook-cards.section-block-{{section.id}} .lookbooks {
+    /* Visual Lookbook Cards - Native CSS Slider (4.5 cards visible) */
+    .visual-lookbook-cards.section-block-{{section.id}} .large-lookbook-banner-wrapper {
+        display: block;
+    }
+
+    .visual-lookbook-cards.section-block-{{section.id}} .halo-block-content.lookbook__right {
+        width: 100%;
+        flex-basis: 100%;
+    }
+
+    .visual-lookbook-cards.section-block-{{section.id}} .lookbooks.visual-lookbook-cards-slider {
         display: flex;
         gap: 20px;
         overflow-x: auto;
@@ -160,7 +169,7 @@
         padding-bottom: 10px;
     }
 
-    .visual-lookbook-cards.section-block-{{section.id}} .lookbooks::-webkit-scrollbar {
+    .visual-lookbook-cards.section-block-{{section.id}} .lookbooks.visual-lookbook-cards-slider::-webkit-scrollbar {
         display: none;
     }
 
@@ -176,6 +185,7 @@
     .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item .lookbook-image {
         border-radius: {{ section.settings.card_border_radius }}px;
         overflow: hidden;
+        position: relative;
     }
 
     .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item .img-box {
@@ -185,26 +195,6 @@
 
     .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item .img-box .image {
         border-radius: {{ section.settings.card_border_radius }}px;
-    }
-
-    /* Slick slider override for 4.5 cards */
-    .visual-lookbook-cards.section-block-{{section.id}} .slick-list {
-        padding: 0 8% 0 0 !important;
-    }
-
-    .visual-lookbook-cards.section-block-{{section.id}} .slick-track {
-        display: flex;
-        gap: 20px;
-    }
-
-    .visual-lookbook-cards.section-block-{{section.id}} .slick-slide {
-        width: calc((100% - 60px) / 4) !important;
-        margin: 0 !important;
-    }
-
-    .visual-lookbook-cards.section-block-{{section.id}}:has(.lookbook-image-item+.lookbook-image-item) .lookbook-image-item {
-        margin: 0 !important;
-        opacity: 1;
     }
 
     @media screen and (min-width: 1400px) {
@@ -230,12 +220,14 @@
 
     @media screen and (max-width: 767px) {
         .visual-lookbook-cards.section-block-{{section.id}} .lookbook-image-item {
-            flex: 0 0 calc((100% - 20px) / 1.5);
-            min-width: calc((100% - 20px) / 1.5);
+            flex: 0 0 calc((100% - 15px) / 1.3);
+            min-width: calc((100% - 15px) / 1.3);
         }
         
-        .visual-lookbook-cards.section-block-{{section.id}} .lookbooks {
+        .visual-lookbook-cards.section-block-{{section.id}} .lookbooks.visual-lookbook-cards-slider {
             gap: 15px;
+            padding-left: 15px;
+            padding-right: 15px;
         }
     }
 </style>
@@ -245,7 +237,7 @@
     <noscript>{{ 'component-fancybox.css' | asset_url | stylesheet_tag }}</noscript>
 {%- endif -%}
 
-<div class="large-lookbook-banner visual-lookbook-cards section-block-{{section.id}}{% if settings.banner_animation == 'effect_fade_up' %} scroll-trigger animate--slide-in{% endif %}" id="visual-lookbook-cards-{{section.id}}" data-loader-script="{{ 'halo.large-lookbook-slider.js' | asset_url }}">
+<div class="large-lookbook-banner visual-lookbook-cards section-block-{{section.id}}{% if settings.banner_animation == 'effect_fade_up' %} scroll-trigger animate--slide-in{% endif %}" id="visual-lookbook-cards-{{section.id}}">
     <div class="{{ container }}">
         <div class="large-lookbook-banner-wrapper" style="--header-max-width: {% if title != blank or des != blank %}{{ content_width }}{% else %}0px{% endif %};">
             {%- if title != blank or des != blank -%}
@@ -265,7 +257,7 @@
             {%- endif -%}
             {%- if section.blocks.size > 0 -%}
                 <div class="halo-block-content lookbook__right{% if settings.banner_animation == 'effect_fade_up' %} scroll-trigger animate--slide-in{% endif %}">
-                    <div class="lookbooks" data-show-lookbook-container style="--scrollbar-spacing: {{ view_more_mg_top | divided_by: 2 | append: 'px' }};" data-large-lookbook-slider>
+                    <div class="lookbooks visual-lookbook-cards-slider" data-show-lookbook-container style="--scrollbar-spacing: {{ view_more_mg_top | divided_by: 2 | append: 'px' }};">
                         {%- for block in section.blocks -%}
                             {%- if block.type == 'lookbook_image' -%}
                                 {%- liquid
